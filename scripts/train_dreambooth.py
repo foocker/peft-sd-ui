@@ -29,7 +29,7 @@ from diffusers.optimization import get_scheduler
 from diffusers.utils import check_min_version
 from diffusers.utils.import_utils import is_xformers_available
 from huggingface_hub import HfFolder, Repository, whoami
-from peft import LoraConfig, LoraModel, get_peft_model_state_dict
+from peft import LoraConfig, LoraModel, get_peft_model_state_dict, get_peft_model
 from PIL import Image
 from torchvision import transforms
 from tqdm.auto import tqdm
@@ -689,7 +689,7 @@ def main(args):
             lora_dropout=args.lora_dropout,
             bias=args.lora_bias,
         )
-        unet = LoraModel(config, unet)
+        unet = get_peft_model(unet, config)
         print_trainable_parameters(unet)
         print(unet)
 
@@ -704,7 +704,7 @@ def main(args):
             lora_dropout=args.lora_text_encoder_dropout,
             bias=args.lora_text_encoder_bias,
         )
-        text_encoder = LoraModel(config, text_encoder)
+        text_encoder = get_peft_model(text_encoder, config)
         print_trainable_parameters(text_encoder)
         print(text_encoder)
 
